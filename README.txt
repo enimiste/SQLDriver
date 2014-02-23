@@ -39,10 +39,10 @@ foreach ($result_set as $value) {
 There is an abstraction that not specify the type of DB server that will be used :
 
 
-												 SQL_Command_Builder
-											     /				  \
-											   /					\
-							SQL_Select_Command_Builder		    SQL_Update_Command_builder
+					 SQL_Command_Builder
+			         	/		      \
+				       /		       \
+		SQL_Update_Command_Builder		    SQL_Select_Command_builder
 								|- select
 								|- from
 								|- join
@@ -51,45 +51,44 @@ There is an abstraction that not specify the type of DB server that will be used
 
 
 
-			Common_Server_Param	<============	SQL_Command_Executor   ========= >  SQL_Result_Set
-				|- host_name
-				|- port_number							   |  
-				|- user_name				   		       |
-				|- password							       |
-				|- db_name								   |
-													   	   v
-
-												  SQL_NoQuery_Result
+   Common_Server_Param	<============	SQL_Command_Executor   ========= >  SQL_Result_Set
+	|- host_name
+	|- port_number							          |  
+	|- user_name				   		                  |
+	|- password							          |
+	|- db_name								  |
+										  v
+									SQL_NoQuery_Result
 
 
 An implementation of Mysql :
 
-												SQL_Select_Command_Builder
+			SQL_Select_Command_Builder
 
-															^
-															|
-															|
-															|
+				^
+				|
+				|
+				|
 
-												Mysql_Select_Command_Builder  ========> Mysql_Result_Set
+			Mysql_Select_Command_Builder  ========> Mysql_Result_Set
 
-																							 |
-																							 |
-																							 |
-																							 |
-																							 v
+									|
+									|
+									|
+									|
+									v
 
-																						SQL_Result_Set
+								SQL_Result_Set
 
 
 For chosing a specifique driver, the user of this library will use a factory class :
 
 
 
-												SQL_Factory
-													|- get_select_command_builder()
-													|- get_update_command_builder()
-													|- get_command_excutor()
+				SQL_Factory
+					|- get_select_command_builder()
+					|- get_update_command_builder()
+					|- get_command_excutor()
 
 
 
