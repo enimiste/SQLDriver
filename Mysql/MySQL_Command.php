@@ -63,6 +63,12 @@ class Mysql_Select_Command_Builder extends SQL_Select_Command_Builder {
         return $this;
     }
 
+    public function limit($limit) {
+        if(!is_numeric($limit))
+            throw new SQL_Exception("The limit should be an integer value.");
+        $this->limit = $limit;
+    }
+
     public function get() {
         $sql = "SELECT " . implode(", ", $this->select_fields) . " ";
         $sql .= " FROM " . $this->from . " ";
@@ -72,6 +78,8 @@ class Mysql_Select_Command_Builder extends SQL_Select_Command_Builder {
             $sql .= " WHERE " . implode(" AND ", $this->wheres) . " ";
         if (!empty($this->order_by))
             $sql .= $this->order_by;
+        if (!empty($this->limit))
+            $sql .= " LIMIT " . $this->limit;
         return $sql;
     }
 

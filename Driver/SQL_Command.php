@@ -35,6 +35,8 @@ abstract class SQL_Select_Command_Builder extends SQL_Command_Builder {
 
     abstract function where($table_name, $field_name, $op, $value);
 
+    abstract function limit($limit);
+
     abstract function order_by($table_name, $field_name, $order = "ASC");
 }
 
