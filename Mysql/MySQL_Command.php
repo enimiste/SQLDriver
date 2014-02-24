@@ -19,7 +19,7 @@ class Mysql_Select_Command_Builder extends SQL_Select_Command_Builder {
     function __construct() {
         $this->clear();
     }
-    
+
     function select($table_name, $field_name, $alias = FALSE) {
         $table_name = $this->table_prefix . $table_name;
         if ($alias)
@@ -78,7 +78,7 @@ class Mysql_Select_Command_Builder extends SQL_Select_Command_Builder {
         if (!is_numeric($limit))
             throw new SQL_Exception("The limit should be an integer value.");
         $this->limit = $limit;
-        
+
         return $this;
     }
 
@@ -107,8 +107,8 @@ class Mysql_Command_Executor extends SQL_Command_Executor {
     public function execute_query(SQL_Command_Builder $command) {
         $link_mysql = mysql_connect($this->params->getHost_name(), $this->params->getUser_name(), $this->params->getPassword()) or die(mysql_error());
         mysql_select_db($this->params->getDb_name()) or die(mysql_error());
-        
-        if ($command->get_command_type() == SQL_Command_Builder::$SELECT_COMMAND){
+
+        if ($command->get_command_type() == SQL_Command_Builder::$SELECT_COMMAND) {
             $result = mysql_query($command->get()) or die(mysql_error());
             $res = new Mysql_Result_Set($result);
         } else {
@@ -186,7 +186,11 @@ class Mysql_Update_Command_Builder extends SQL_Update_Command_builder {
         if (array_key_exists($field_name, $this->columns))
             throw new SQL_Exception("Column specified in the update command already exist.");
         $this->valdiate_type($field_new_value, $type);
-        $this->columns[$field_name] = $field_new_value;
+        $this->columns[] = array(
+            $field_name,
+            $field_new_value,
+            $type
+        );
 
         return $this;
     }
@@ -200,9 +204,12 @@ class Mysql_Update_Command_Builder extends SQL_Update_Command_builder {
 
     public function get() {
         $sql = "UPDATE " . $this->table_name . " SET ";
-        $sql .= implode(", ", array_map(function($key, $item) {
-                            return $key . "=" . $item;
-                        }, array_keys($this->columns), array_values($this->columns)));
+        $sql .= implode(", ", array_map(function($item) {
+                            if (in_array($item[2], array(SQL_Column_Type::$DATE, SQL_Column_Type::$STRING)))
+                                return $item[0] . '="' . $item[1] . '" ';
+                            else
+                                return $item[0] . "=" . $item[1];
+                        }, $this->columns));
         if (!empty($this->wheres))
             $sql .= " WHERE " . implode(" AND ", $this->wheres) . " ";
         return $sql;
@@ -262,8 +269,9 @@ class Mysql_Update_Command_Builder extends SQL_Update_Command_builder {
 }
 
 class MySql_NoQuery_Result extends SQL_NoQuery_Result {
+
     private $result;
-    
+
     function __construct($result) {
         $this->result = $result;
     }
@@ -273,8 +281,10 @@ class MySql_NoQuery_Result extends SQL_NoQuery_Result {
     }
 
     public function get_int_value() {
-        if(is_numeric($this->result)) return intval($this->result);
-    }    
+        if (is_numeric($this->result))
+            return intval($this->result);
+    }
+
 }
 
 ?>
