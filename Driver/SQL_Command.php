@@ -57,6 +57,7 @@ abstract class SQL_Command_Executor {
 }
 
 abstract class SQL_Result_Set implements Iterator {
+    abstract function first_row();
 }
 
 abstract class SQL_NoQuery_Result {

@@ -147,6 +147,12 @@ class Mysql_Result_Set extends SQL_Result_Set {
         return $this->current;
     }
 
+    function first_row(){
+        $this->rewind();
+        if($this->valid()) return $this->current;
+        throw new SQL_Exception("The result set is empty.");
+    }
+
 }
 
 class Mysql_Update_Command_Builder extends SQL_Update_Command_builder {
