@@ -11,6 +11,11 @@ require_once $driver_pdo;
 final class SQL_Factory
 {
 
+    /**
+     * @param string $driver
+     * @return SQL_Select_Command_Builder
+     * @throws SQL_Exception
+     */
     public static function get_select_command_builder($driver = 'pdo')
     {
         switch ($driver) {
@@ -23,6 +28,11 @@ final class SQL_Factory
         }
     }
 
+    /**
+     * @param string $driver
+     * @return SQL_Update_Command_Builder
+     * @throws SQL_Exception
+     */
     public static function get_update_command_builder($driver = 'pdo')
     {
         switch ($driver) {
@@ -35,6 +45,11 @@ final class SQL_Factory
         }
     }
 
+    /**
+     * @param string $driver
+     * @return SQL_Insert_Command_Builder
+     * @throws SQL_Exception
+     */
     public static function get_insert_command_builder($driver = 'pdo')
     {
         switch ($driver) {
@@ -47,6 +62,11 @@ final class SQL_Factory
         }
     }
 
+    /**
+     * @param string $driver
+     * @return SQL_Delete_Command_Builder
+     * @throws SQL_Exception
+     */
     public static function get_delete_command_builder($driver = 'pdo')
     {
         switch ($driver) {
@@ -59,6 +79,11 @@ final class SQL_Factory
         }
     }
 
+    /**
+     * @param string $driver
+     * @return SQL_Procedure_Command_Builder
+     * @throws SQL_Exception
+     */
     public static function get_procedure_command_builder($driver = 'pdo')
     {
         switch ($driver) {
@@ -71,7 +96,12 @@ final class SQL_Factory
         }
     }
 
-    public static function get_command_excutor($driver = 'pdo')
+    /**
+     * @param string $driver
+     * @return SQL_Command_Executor
+     * @throws SQL_Exception
+     */
+    public static function get_command_executor($driver = 'pdo')
     {
         switch ($driver) {
             case 'pdo':
@@ -83,6 +113,11 @@ final class SQL_Factory
         }
     }
 
+    /**
+     * @param string $driver
+     * @return DataBaseBackup
+     * @throws SQL_Exception
+     */
     public static function get_database_backup($driver = 'pdo')
     {
         switch ($driver) {

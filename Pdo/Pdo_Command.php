@@ -225,6 +225,12 @@ class Pdo_Select_Command_Builder extends SQL_Select_Command_Builder
         $this->select_fields = array();
     }
 
+    function where_like($table_name, $field_name, $value)
+    {
+        $table_name = $this->table_prefix . $table_name;
+        $this->wheres[] = $table_name . "." . $field_name . ' LIKE "' . $value . '" ';
+        return $this;
+    }
 }
 
 class Pdo_Command_Executor extends SQL_Command_Executor
@@ -712,6 +718,10 @@ class Pdo_Update_Command_Builder extends SQL_Update_Command_Builder
         return $this;
     }
 
+    function where_like($table_name, $field_name, $value)
+    {
+        throw new \Exception(sprintf("%s::%s not implemented", __CLASS__, __FUNCTION__));
+    }
 }
 
 class Pdo_NoQuery_Result extends SQL_NoQuery_Result
@@ -1216,6 +1226,10 @@ class Pdo_Delete_Command_Builder extends SQL_Delete_Command_Builder
         return $this;
     }
 
+    function where_like($table_name, $field_name, $value)
+    {
+        throw new \Exception(sprintf("%s::%s not implemented", __CLASS__, __FUNCTION__));
+    }
 }
 
 class Pdo_Procedure_Command_Builder extends SQL_Procedure_Command_Builder
@@ -1281,7 +1295,7 @@ class Pdo_Procedure_Command_Builder extends SQL_Procedure_Command_Builder
         SQL_Column_Type::validate($data_type);
 
         $this->_params[$direction][$name] = array(
-            'name'=>$name,
+            'name' => $name,
             'value' => $value,
             'type' => SQL_Column_Type::mapToPrimitive($data_type)
         );
@@ -1296,7 +1310,19 @@ class Pdo_Procedure_Command_Builder extends SQL_Procedure_Command_Builder
         $in_param = $this->getParamsByDirection(self::PD_IN);
 
         foreach ($in_param as $name => $param) {
-            $instructions[] = 'Set @' . $name . '=' . $param['value'];
+            switch ($param['type']) {
+                case 'string':
+                    $val = "'" . $param['value'] . "'";
+                    break;
+                case 'date':
+                    $d = $param['value'];
+                    if ($d instanceof \DateTime) $val = "'" . $d->format("Y-m-d H:i:s") . "'";
+                    if (is_string($d)) $val = "'" . $d . "'";
+                    break;
+                default:
+                    $val = $param['value'];
+            }
+            $instructions[] = 'Set @' . $name . '=' . $val;
         }
 
         $call = 'CALL ' . $this->_procedure_name . '(';

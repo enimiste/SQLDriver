@@ -99,6 +99,8 @@ interface SQL_Where
     function where_in($table_name, $field_name, Array $values, $type = 2);
 
     function where_not_in($table_name, $field_name, Array $values, $type = 2);
+
+    function where_like($table_name, $field_name, $value);
 }
 
 abstract class SQL_Select_Command_Builder extends SQL_Command_Builder implements SQL_Where
@@ -163,6 +165,10 @@ abstract class SQL_Command_Executor
         $this->_transaction_active = FALSE;
     }
 
+    /**
+     * @param Common_Server_Param $params
+     * @return $this
+     */
     public function set_server_param(Common_Server_Param $params)
     {
         $this->save_server_param($params);
