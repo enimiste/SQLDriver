@@ -6,7 +6,7 @@ Introduction :
 Its useful for developpers who uses the native php to interacte with database.
 
 Exemple of command building :
-```
+```php
 $cmd = SQL_Factory::get_select_command_builder();
 $cmd = $cmd->prefix_table("bf_")
             ->from("contrats")
@@ -21,17 +21,17 @@ $cmd = $cmd->prefix_table("bf_")
 echo $cmd->get();
 ```
 this code will ouput :
-```
+```sql
 SELECT bf_contrats.id AS id_contrat, bf_contrats.identifiant AS identifiant_contrat, bf_commandes.id AS id_commande, bf_commandes.contenu AS contenu_commande, bf_commandes.created_on AS created_on_commande  FROM bf_contrats  LEFT JOIN bf_commandes ON bf_commandes.id_contrat = bf_contrats.id  WHERE bf_commandes.etat_envoi = 0
 ```
 To execute the builded command $cmd we use :
-```
+```php
 $result_set = SQL_Factory::get_command_excutor()
             ->set_server_param(new Common_Server_Param("localhost", "3306", "root", "root", "d2_db"))
             ->execute_query($cmd);
 ```
 $result_set is not the same as the result of mysql. This one can be used inside a foreach loop :
-```
+```php
 foreach ($result_set as $value) {
    //Do somthing ....
 }
